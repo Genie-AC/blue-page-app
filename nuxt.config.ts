@@ -31,8 +31,8 @@ export default defineNuxtConfig({
     // Improve asset resolution
     resolve: {
       alias: {
-        '@': '/home/devingray/blue-page-app',
-        '~': '/home/devingray/blue-page-app'
+        '@': new URL('./', import.meta.url).pathname, // Dynamically resolve to project root
+        '~': new URL('./', import.meta.url).pathname // Dynamically resolve to project root
       }
     }
   },
