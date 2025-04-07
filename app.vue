@@ -13,6 +13,17 @@
 
 <script setup>
 // No specific logic needed in app.vue as it delegates to layouts and pages
+import { useRequestHeaders } from 'nuxt/app';
+import { useStore } from '~/stores';
+
+const headers = useRequestHeaders();
+const domainName = headers.host || 'ductedminisplit.com';
+
+const store = useStore();
+store.setDomainName(domainName);
+store.setPageTitleFromRoute(domainName);
+console.log('Domain Name:', store.getDomainName);
+console.log('Title Name:', store.getPageTitle);
 </script>
 
 <style>

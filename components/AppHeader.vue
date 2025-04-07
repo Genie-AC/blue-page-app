@@ -23,12 +23,13 @@
 import { useStore } from "@/stores";
 // No need to import computed in Vue 3 with <script setup>
 import VideoSection from '@/components/VideoSection.vue';
+import formatTitle from "~/plugins/title-formatter";
 
 // Get state from store (could be replaced with useState or usePinia if using those)
 const store = useStore();
 
 // Use reactive computed properties in Vue 3 style
-const title = computed(() => store.title);
+const title = computed(() => store.pageTitle);
 
 // Alternative approach using Nuxt 3's useState if store is simple:
 // const title = useState('title')

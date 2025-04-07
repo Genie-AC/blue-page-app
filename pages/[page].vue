@@ -30,11 +30,6 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { useStore } from '~/stores'; // Import the Pinia store
-import AppHeader from '~/components/AppHeader.vue';
-import AppFooter from '~/components/AppFooter.vue';
-import VideoSection from '~/components/VideoSection.vue';
-import EnterButton from '~/components/EnterButton.vue';
-import CategoryList from '~/components/CategoryList.vue';
 
 // Access the route and store
 const route = useRoute();
@@ -78,7 +73,7 @@ onMounted(() => {
 });
 
 // Access categories and products from the Pinia store
-const categories = computed(() => store.categories);
+const cities = computed(() => store.cities);
 const products = computed(() => store.products);
 </script>
 
