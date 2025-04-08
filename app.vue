@@ -18,9 +18,9 @@
 
 <script setup>
 import { useRequestHeaders } from 'nuxt/app';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useStore } from '~/stores';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 // Error state to track application-level errors
 const appError = ref(null);
@@ -30,6 +30,29 @@ try {
   const headers = useRequestHeaders(['host']);
   const route = useRoute();
   const store = useStore();
+
+  // Function to update title based on route
+  const updateTitleFromRoute = () => {
+    try {
+      const page = route.params.page || '';
+      const hasCity = !!route.query.city;
+      const hasBzn = !!route.query.bzn;
+      const hasAcc = !!route.query.acc;
+      const hasMod = !!route.query.mod;
+
+      store.setPageTitleFromRoute(
+        store.domainName,  // Use stored domain name
+        page,
+        hasCity,  // Pass boolean flags instead
+        hasBzn,
+        hasAcc,
+        hasMod
+      );
+    } catch (error) {
+      console.error('Failed to update page title:', error);
+      appError.value = 'Failed to update page information';
+    }
+  };
 
   // Get domain name with fallback
   let domainName = headers.host || 'hvac-company.com';
@@ -42,27 +65,16 @@ try {
     appError.value = 'Failed to set website information';
   }
 
-  // Extract route parameters
-  const page = route.params.page || '';
-  const hasCity = !!route.query.city;
-  const hasBzn = !!route.query.bzn;
-  const hasAcc = !!route.query.acc;
-  const hasMod = !!route.query.mod;
+  // Set initial title
+  updateTitleFromRoute();
 
-  // Set appropriate title
-  try {
-    store.setPageTitleFromRoute(
-      domainName,
-      page,
-      hasCity ? page : '',
-      hasBzn ? page : '',
-      hasAcc ? page : '',
-      hasMod ? page : ''
-    );
-  } catch (error) {
-    console.error('Failed to set page title:', error);
-    appError.value = 'Failed to set page title';
-  }
+  // Watch for route changes and update title accordingly
+  watch(
+    () => route.fullPath,
+    () => {
+      updateTitleFromRoute();
+    }
+  );
 
   // In client-side, re-evaluate using window.location if needed
   onMounted(() => {
@@ -70,18 +82,8 @@ try {
       if (process.client && !headers.host) {
         const clientDomain = window.location.hostname;
         store.setDomainName(clientDomain);
-        store.setPageTitleFromRoute(
-          clientDomain,
-          page,
-          hasCity ? page : '',
-          hasBzn ? page : '',
-          hasAcc ? page : '',
-          hasMod ? page : ''
-        );
+        updateTitleFromRoute();
       }
-
-      console.log('Domain Name:', store.domainName);
-      console.log('Title Name:', store.pageTitle);
     } catch (error) {
       console.error('Error during client-side initialization:', error);
       appError.value = 'Error initializing application';

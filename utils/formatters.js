@@ -13,7 +13,6 @@ export default function formatTitle(domain = "hvac-company.com", page = "", city
         
         // Capitalize the first letter of the domain name
         const root = domain.charAt(0).toUpperCase() + domain.slice(1);
-        console.log("Root domain:", root);
         
         // Format the root domain into a readable title
         let formattedTitle = root
@@ -27,38 +26,37 @@ export default function formatTitle(domain = "hvac-company.com", page = "", city
             .replace(/Rv /g, 'RV ')
             .replace(/-/g, ' ') // Replace hyphens with spaces
             .replace(/hvac/g, 'HVAC');
-
-        // Append city if provided
-        if (city) {
-            formattedTitle += ` in ${city}`;
-        }
-
-        // Append page context if provided
+            
+        // Format page (remove hyphens)
         if (page) {
-            formattedTitle += ` ${page}`;
+            page = page.replace(/-/g, ' ');
+        }
+            
+        // Append city if provided (this should only happen once now)
+        if (city) {
+            formattedTitle += ` in ${city.replace(/-/g, ' ')}`;
         }
         
         // Append business context if provided
         if (bzn) {
-            formattedTitle += ` for ${bzn}`;
+            formattedTitle += ` for ${bzn.replace(/-/g, ' ')}`;
         }
         
         // Append accessory context if provided
         if (acc) {
-            formattedTitle += ` for ${acc}`;
+            formattedTitle += ` for ${acc.replace(/-/g, ' ')}`;
         }
         
         // Append module context if provided
         if (mod) {
-            formattedTitle += ` ${mod}`;
+            formattedTitle += ` ${mod.replace(/-/g, ' ')}`;
         }
         
+        // Return the formatted title
         return formattedTitle.trim();
     } catch (error) {
-        console.error("Error formatting title:", error, { domain, page, city, bzn, acc, mod });
-        
-        // Return a safe default title
-        return "Air Conditioner Company";
+        console.error("Error formatting title:", error);
+        return "Air Conditioner"; // Default title as fallback
     }
 }
 

@@ -62,24 +62,34 @@ export const useStore = defineStore("main", {
       }
     },
     
-    setPageTitleFromRoute(domain, page = '', city = '', bzn = '', acc = '', mod = '') {
+    setPageTitleFromRoute(domain, page = '', isCity = false, isBzn = false, isAcc = false, isMod = false) {
       try {
-        console.log("Formatting title with:", { domain, page, city, bzn, acc, mod });
+        // Set flags in state
+        this.isCity = isCity;
+        this.isBzn = isBzn;
+        this.isAcc = isAcc;
+        this.isProd = isMod;
         
-        // Format the title using formatter
-        const formattedTitle = formatTitle(domain, page, city, bzn, acc, mod);
+        // Format the title using our formatter
+        const formattedTitle = formatTitle(
+          domain, 
+          page,
+          isCity ? page : '',  // Only pass page as city if isCity flag is true
+          isBzn ? page : '',
+          isAcc ? page : '',
+          isMod ? page : ''
+        );
         
         // Set the title in the store
-        this.pageTitle = formattedTitle || "Air Conditioner"; // Fallback if formatter returns undefined
-        
+        this.pageTitle = formattedTitle;
         console.log("Title set to:", this.pageTitle);
-        return this.pageTitle;
       } catch (error) {
         console.error("Error formatting title:", error);
         this.errorMessage = "Failed to format page title";
         this.pageTitle = "Air Conditioner"; // Default title as fallback
-        return this.pageTitle;
       }
+      
+      return this.pageTitle;
     },
     
     async fetchCities() {
