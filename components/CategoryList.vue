@@ -2,11 +2,7 @@
   <section v-if="categories && categories.length > 0">
     <label>{{ title }}</label>
     <div class="category-grid">
-      <NuxtLink
-        v-for="category in categories"
-        :key="category.id || category"
-        :to="generateLink(category)"
-      >
+      <NuxtLink v-for="category in categories" :key="category.id || category" :to="generateLink(category)">
         {{ category.name || category }}
       </NuxtLink>
     </div>
@@ -35,17 +31,17 @@ const props = defineProps({
 
 // Generate the appropriate link based on category type
 const generateLink = (category) => {
-  const slug = typeof category === 'string' 
-    ? category.replace(/ /g, '-') 
+  const slug = typeof category === 'string'
+    ? category.replace(/ /g, '-')
     : category.slug || '';
-    
+
   const queryParams = {
     city: '?city=1',
     product: '?mod=1',
     accessory: '?acc=1',
     service: '?bzn=1'
   };
-  
+
   return `/${slug}${props.type ? queryParams[props.type] || '' : ''}`;
 };
 </script>
@@ -72,14 +68,14 @@ label {
   align-items: center;
 }
 
-.category-grid > a {
+.category-grid>a {
   text-wrap: pretty;
   font: 12px/16px sans-serif;
   text-decoration: none;
   color: lightgray;
 }
 
-.category-grid > a:hover {
+.category-grid>a:hover {
   color: #0ff;
   transition: all 0.3s ease;
 }

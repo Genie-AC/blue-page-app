@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import * as Banner from '@/assets/images/banner.png';
+import * as Banner from '~/assets/images/banner.png';
 export default {
   data () {
     return {

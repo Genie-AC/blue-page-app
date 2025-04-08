@@ -1,4 +1,4 @@
-export default function formatTitle(domain = "ductedminisplit.com", page = "", city = "", bzn = "", acc = "", mod = "") {
+export default function formatTitle(domain = "hvac-company.com", page = "", city = "", bzn = "", acc = "", mod = "") {
     // Capitalize the first letter of the domain name
     const root = domain.charAt(0).toUpperCase() + domain.slice(1);
     console.log("Root domain:", root);

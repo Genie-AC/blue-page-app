@@ -2,7 +2,7 @@
   <header class="show">
     <h1 class="white b text-5xl text-center">{{ title }}</h1>
     <NuxtLink to="/">
-      <img class="banner" src="@/assets/images/banner.png" :alt="title || 'Genie Air Conditioning and Heating'" />
+      <img class="banner" src="~/assets/images/banner.png" :alt="title || 'Genie Air Conditioning and Heating'" />
     </NuxtLink>
     <div class="mobile-column-reverse">
       <div class="video-row">
@@ -19,25 +19,16 @@
 </template>
 
 <script setup>
-// Import composable instead of direct store import
-import { useStore } from "@/stores";
-// No need to import computed in Vue 3 with <script setup>
-import VideoSection from '@/components/VideoSection.vue';
-import formatTitle from "~/plugins/title-formatter";
+// Changed imports to use ~ notation for Nuxt 3
+import { useStore } from "~/stores";
+import { computed } from "vue";
+import VideoSection from '~/components/VideoSection.vue';
 
-// Get state from store (could be replaced with useState or usePinia if using those)
+// Get state from store
 const store = useStore();
 
-// Use reactive computed properties in Vue 3 style
-const title = computed(() => store.pageTitle);
-
-// Alternative approach using Nuxt 3's useState if store is simple:
-// const title = useState('title')
-
-// If using Pinia instead of Vuex:
-// import { useMainStore } from '@/store/main'
-// const store = useMainStore()
-// const title = computed(() => store.title)
+// Use Vue 3 reactive computed property to access store state
+const title = computed(() => store.pageTitle ?? 'Air Conditioner');
 </script>
 
 <style scoped>

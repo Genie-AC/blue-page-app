@@ -2,7 +2,7 @@
   <footer class="show">
     <div class="footer__copy">
       <a href="https://airconditioner.com/">
-        <img src="@/assets/images/genie-logo-ribbon-2.svg" alt="Genie Air" />
+        <img src="~/assets/images/genie-logo-ribbon-2.svg" alt="Genie Air" />
       </a>
       <strong>{{ title }}</strong>
       <em>"One of the largest Wholesale Distributor's in the United States!"</em>
@@ -40,14 +40,14 @@
 </template>
 
 <script setup>
-import { useStore } from "@/stores";
+import { useStore } from "~/stores";
 import { computed } from "vue";
 
 // Get state from store
 const store = useStore();
 
 // Create computed properties from store state
-const title = computed(() => store.title);
+const title = computed(() => store.pageTitle);
 const cities = computed(() => store.cities);
 const products = computed(() => store.products);
 const accessories = computed(() => store.accessories);

@@ -1,29 +1,63 @@
 <template>
   <div class="app-container">
-    <!-- Keep NuxtRouteAnnouncer for accessibility -->
     <NuxtRouteAnnouncer />
-
-    <!-- Use NuxtLayout instead of direct component imports -->
     <NuxtLayout>
-      <!-- NuxtPage renders the current route content from /pages directory -->
       <NuxtPage />
     </NuxtLayout>
   </div>
 </template>
 
 <script setup>
-// No specific logic needed in app.vue as it delegates to layouts and pages
 import { useRequestHeaders } from 'nuxt/app';
+import { useRoute } from 'vue-router';
 import { useStore } from '~/stores';
+import { onMounted } from 'vue';
 
-const headers = useRequestHeaders();
-const domainName = headers.host || 'ductedminisplit.com';
-
+// Get headers on server side with explicit header list
+const headers = useRequestHeaders(['host']);
+const route = useRoute();
 const store = useStore();
+
+// Get domain name with fallback
+let domainName = headers.host || 'hvac-company.com';
 store.setDomainName(domainName);
-store.setPageTitleFromRoute(domainName);
-console.log('Domain Name:', store.getDomainName);
-console.log('Title Name:', store.getPageTitle);
+
+// Extract route parameters
+const page = route.params.page || '';
+const hasCity = !!route.query.city;
+const hasBzn = !!route.query.bzn;
+const hasAcc = !!route.query.acc;
+const hasMod = !!route.query.mod;
+
+// Set appropriate title
+store.setPageTitleFromRoute(
+  domainName,
+  page,
+  hasCity ? page : '',
+  hasBzn ? page : '',
+  hasAcc ? page : '',
+  hasMod ? page : ''
+);
+
+// In client-side, re-evaluate using window.location if needed
+onMounted(() => {
+  if (process.client && !headers.host) {
+    const clientDomain = window.location.hostname;
+    console.log('Client Domain:', clientDomain);
+    store.setDomainName(clientDomain);
+    store.setPageTitleFromRoute(
+      clientDomain,
+      page,
+      hasCity ? page : '',
+      hasBzn ? page : '',
+      hasAcc ? page : '',
+      hasMod ? page : ''
+    );
+  }
+
+  console.log('Domain Name:', store.domainName);
+  console.log('Title Name:', store.pageTitle);
+});
 </script>
 
 <style>

@@ -6,8 +6,9 @@ import {
   BUSINESSES,
   STREET_ADDRESS,
   SLUGS,
-} from "@/utils/constants";
-import formatTitle from "@/plugins/title-formatter";
+} from "~/utils/constants";
+import formatTitle from "~/plugins/title-formatter";
+import { ref, computed } from 'vue';
 
 export const useStore = defineStore("main", {
   state: () => ({
@@ -20,10 +21,14 @@ export const useStore = defineStore("main", {
     streetAddress: STREET_ADDRESS,
 
     // Other state properties
-	domainName: "",
+    domainName: "hvac-company.com", // Default value
     currentPage: "",
-    pageTitle: "",
+    pageTitle: "HVAC Company", // Default title
     metaDescription: "",
+    isCity: false,
+    isProd: false,
+    isAcc: false,
+    isBzn: false,
   }),
 
   getters: {
@@ -34,7 +39,7 @@ export const useStore = defineStore("main", {
     getSlugs: (state) => state.slugs,
     getStreetAddress: (state) => state.streetAddress,
     getCurrentPage: (state) => state.currentPage,
-	getDomainName: (state) => state.domainName,
+    getDomainName: (state) => state.domainName,
     getPageTitle: (state) => state.pageTitle,
     getMetaDescription: (state) => state.metaDescription,
   },
@@ -57,13 +62,25 @@ export const useStore = defineStore("main", {
       this.pageTitle = title;
       this.metaDescription = description;
     },
-	setDomainName(domain) {
-      this.domainName = domain;
+    setDomainName(domain) {
+      this.domainName = domain ?? "hvac-company.com";
+      console.log("Domain set to:", this.domainName);
     },
-	setPageTitleFromRoute(domain) {
-	console.log("setPageTitleFromRoute", domain);
-	  const title = formatTitle(domain);
-	  this.pageTitle = title;
-	}
+    setPageTitleFromRoute(domain, page = '', city = '', bzn = '', acc = '', mod = '') {
+      // Format the title using our formatter
+      console.log("Formatting title with:", { domain, page, city, bzn, acc, mod });
+      
+      try {
+        const formattedTitle = formatTitle(domain, page, city, bzn, acc, mod);
+        // Set the title in the store
+        this.pageTitle = formattedTitle;
+        console.log("Title set to:", this.pageTitle);
+      } catch (error) {
+        console.error("Error formatting title:", error);
+        this.pageTitle = "HVAC Company"; // Fallback
+      }
+      
+      return this.pageTitle;
+    }
   },
 });
