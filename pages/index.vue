@@ -31,14 +31,14 @@
 import * as Banner from '~/assets/images/banner.png';
 import { useStore } from '~/stores';
 
-const store = useStore();
 export default {
   data () {
+    const store = useStore();
     return {
       title: this.$route.params.page ? this.$route.params.page.replace(/-/g, ' ') : 'Air Conditioner',
       bannerImage: Banner,
       mainWebsiteUrl: 'https://airconditioner.com',
-      currentUrl: this.$route.fullPath || window.location.hostname || store.domainName || 'hvac-company.com',
+      currentUrl: this.$route.fullPath,
     };
   },
 };

@@ -70,18 +70,22 @@ export const useStore = defineStore("main", {
         this.isAcc = isAcc;
         this.isProd = isMod;
         
-        // Format the title using our formatter
+        console.log("Setting page title with parameters:", { 
+          domain, page, isCity, isBzn, isAcc, isMod 
+        });
+        
+        // Format the title using our formatter - pass page as the appropriate parameter
         const formattedTitle = formatTitle(
           domain, 
-          page,
-          isCity ? page : '',  // Only pass page as city if isCity flag is true
-          isBzn ? page : '',
-          isAcc ? page : '',
-          isMod ? page : ''
+          '', // Don't pass page here to avoid duplicating it
+          isCity ? page : '', // Only pass page as city if isCity flag is true
+          isBzn ? page : '',  // Only pass page as business if isBzn flag is true
+          isAcc ? page : '',  // Only pass page as accessory if isAcc flag is true
+          isMod ? page : ''   // Only pass page as module if isMod flag is true
         );
         
         // Set the title in the store
-        this.pageTitle = formattedTitle;
+        this.pageTitle = formattedTitle || "Air Conditioner";
         console.log("Title set to:", this.pageTitle);
       } catch (error) {
         console.error("Error formatting title:", error);

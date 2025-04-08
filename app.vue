@@ -18,7 +18,7 @@
 
 <script setup>
 import { useRequestHeaders } from 'nuxt/app';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useStore } from '~/stores';
 import { onMounted, ref, watch } from 'vue';
 
@@ -72,6 +72,7 @@ try {
   watch(
     () => route.fullPath,
     () => {
+      console.log("Route changed:", route.fullPath);
       updateTitleFromRoute();
     }
   );
