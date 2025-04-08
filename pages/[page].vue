@@ -27,14 +27,16 @@
         King, General Electric, and so many more.
       </p>
       <address class="flex column gap-4">
-        <span class="inline text-center">
+        <p class="inline text-center">
           <em class="fa-solid fa-location-dot"></em>&thinsp;15041 Calvert Street&ensp;&bull; Van Nuys, CA 91411
-        </span>
-        <a href="tel:8187854151" class="inline">
-          <i class="fa-solid fa-phone"></i>&thinsp;(818) 785-4151
-        </a>
+        </p>
+        <p>
+          <a href="tel:8187854151" class="inline">
+            <i class="fa-solid fa-phone"></i>&thinsp;(818) 785-4151
+          </a>
+        </p>
       </address>
-      <span class="b text-2xl text-center">We Cover Thousands of Cities Throughout The United States!</span>
+      <p class="b text-2xl text-center">We Cover Thousands of Cities Throughout The United States!</p>
     </section>
   </div>
 </template>
@@ -143,5 +145,35 @@ const products = computed(() => store.products);
   margin-top: 0.5rem;
   border-radius: 0.25rem;
   cursor: pointer;
+}
+
+address,
+p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5em 0;
+}
+
+address {
+  padding: 2rem 1rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.b {
+  font-weight: bold;
+}
+
+.text-center {
+  text-align: center;
 }
 </style>
