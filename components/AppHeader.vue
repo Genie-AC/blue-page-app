@@ -28,7 +28,7 @@ import VideoSection from '~/components/VideoSection.vue';
 const store = useStore();
 
 // Use Vue 3 reactive computed property to access store state
-const title = computed(() => store.pageTitle ?? 'Air Conditioner');
+const title = computed(() => store.pageTitle || 'HVAC Company');
 </script>
 
 <style scoped>

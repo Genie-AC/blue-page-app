@@ -29,13 +29,16 @@
 
 <script>
 import * as Banner from '~/assets/images/banner.png';
+import { useStore } from '~/stores';
+
+const store = useStore();
 export default {
   data () {
     return {
-      title: this.$route.params.page ? this.$route.params.page.replace(/-/g, ' ') : 'Air Conditioner',
+      title: this.$route.params.page ? this.$route.params.page.replace(/-/g, ' ') : 'HVAC Company',
       bannerImage: Banner,
       mainWebsiteUrl: 'https://airconditioner.com',
-      currentUrl: this.$route.fullPath,
+      currentUrl: this.$route.fullPath || window.location.hostname || store.domainName || 'hvac-company.com',
     };
   },
 };
