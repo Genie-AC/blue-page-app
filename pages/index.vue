@@ -2,7 +2,7 @@
   <div>
     <section class="white text-xl">
       <p>
-        {{ currentUrl }} (Genie Air Conditioning and Heating, Inc.) is one of the Largest Wholesale Distributors of AC
+        {{ domainName }} (Genie Air Conditioning and Heating, Inc.) is one of the Largest Wholesale Distributors of AC
         mini split units in the United States. Looking for quality Air Conditioner units nearby? Contact us for a wide
         variety of heat pump, mini splits, room air conditioners, window air conditioners, PTAC, wall air
         conditioners, indoor and outdoor a/c units, and heating and cooling accessories for your AC needs. Wholesale
@@ -27,21 +27,21 @@
   </div>
 </template>
 
-<script>
-import * as Banner from '~/assets/images/banner.png';
+<script setup>
+import { useRoute } from 'vue-router';
 import { useStore } from '~/stores';
+import { ref, computed } from 'vue';
 
-export default {
-  data () {
-    const store = useStore();
-    return {
-      title: this.$route.params.page ? this.$route.params.page.replace(/-/g, ' ') : 'Air Conditioner',
-      bannerImage: Banner,
-      mainWebsiteUrl: 'https://airconditioner.com',
-      currentUrl: this.$route.fullPath,
-    };
-  },
-};
+// Access store inside component setup function where Pinia is available
+const store = useStore();
+const route = useRoute();
+
+// Reactive data
+const domainName = computed(() => store.domainName);
+const title = computed(() => route.params.page ? route.params.page.replace(/-/g, ' ') : 'Air Conditioner');
+
+// Main website URL
+const mainWebsiteUrl = ref('https://airconditioner.com');
 </script>
 
 <style scoped>
