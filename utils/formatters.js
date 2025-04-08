@@ -1,25 +1,65 @@
-export function formatTitle(root, page, city, acc, mod) {
-    let title = root.charAt(0).toUpperCase() + root.slice(1);
-    title = title.replace(/([A-Z])/g, ' $1').trim();
-    title = title.replace(/\. .*/, '');
-    title = title.replace(/Ptac/g, 'PTAC');
-    title = title.replace(/Hvac/g, 'HVAC');
-    title = title.replace(/Minisplit/g, 'Mini Split');
-    title = title.replace(/Ac /g, 'AC ');
-    title = title.replace(/Ac$/g, 'AC');
-    title = title.replace(/Rv /g, 'RV ');
-    title = title.replace(/-/g, ' ');
-    title = title.replace(/hvac/g, 'HVAC');
+export default function formatTitle(domain = "hvac-company.com", page = "", city = "", bzn = "", acc = "", mod = "") {
+    try {
+        // Check if domain is localhost and use a default instead
+        if (domain === 'localhost' || domain.includes('localhost:') || domain === '127.0.0.1') {
+            domain = "hvac-company.com";
+        }
+        
+        // Check if domain is undefined or not a string
+        if (!domain || typeof domain !== 'string') {
+            console.warn('formatTitle received invalid domain:', domain);
+            domain = "hvac-company.com";
+        }
+        
+        // Capitalize the first letter of the domain name
+        const root = domain.charAt(0).toUpperCase() + domain.slice(1);
+        console.log("Root domain:", root);
+        
+        // Format the root domain into a readable title
+        let formattedTitle = root
+            .replace(/([A-Z])/g, ' $1') // Add spaces before uppercase letters
+            .replace(/\..*$/, '') // Remove everything after the first dot
+            .replace(/Ptac/g, 'PTAC') // Replace specific substrings
+            .replace(/Hvac/g, 'HVAC')
+            .replace(/Minisplit/g, 'Mini Split')
+            .replace(/Ac /g, 'AC ')
+            .replace(/Ac$/g, 'AC')
+            .replace(/Rv /g, 'RV ')
+            .replace(/-/g, ' ') // Replace hyphens with spaces
+            .replace(/hvac/g, 'HVAC');
 
-    if (city) {
-        title += ` in ${city}`;
+        // Append city if provided
+        if (city) {
+            formattedTitle += ` in ${city}`;
+        }
+
+        // Append page context if provided
+        if (page) {
+            formattedTitle += ` ${page}`;
+        }
+        
+        // Append business context if provided
+        if (bzn) {
+            formattedTitle += ` for ${bzn}`;
+        }
+        
+        // Append accessory context if provided
+        if (acc) {
+            formattedTitle += ` for ${acc}`;
+        }
+        
+        // Append module context if provided
+        if (mod) {
+            formattedTitle += ` ${mod}`;
+        }
+        
+        return formattedTitle.trim();
+    } catch (error) {
+        console.error("Error formatting title:", error, { domain, page, city, bzn, acc, mod });
+        
+        // Return a safe default title
+        return "Air Conditioner Company";
     }
-
-    if (page) {
-        title += ` ${page}`;
-    }
-
-    return title.trim();
 }
 
 export function formatMetaDescription(title, address) {

@@ -35,7 +35,7 @@ const store = useStore();
 export default {
   data () {
     return {
-      title: this.$route.params.page ? this.$route.params.page.replace(/-/g, ' ') : 'HVAC Company',
+      title: this.$route.params.page ? this.$route.params.page.replace(/-/g, ' ') : 'Air Conditioner',
       bannerImage: Banner,
       mainWebsiteUrl: 'https://airconditioner.com',
       currentUrl: this.$route.fullPath || window.location.hostname || store.domainName || 'hvac-company.com',

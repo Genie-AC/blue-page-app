@@ -1,9 +1,18 @@
 <template>
   <div class="app-container">
-    <NuxtRouteAnnouncer />
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
+    <!-- Show error message if there was an error -->
+    <div v-if="appError" class="error-container">
+      <p>{{ appError }}</p>
+      <button @click="window.location.reload()">Reload Page</button>
+    </div>
+
+    <!-- Regular app content if no errors -->
+    <template v-else>
+      <NuxtRouteAnnouncer />
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+    </template>
   </div>
 </template>
 
@@ -11,53 +20,77 @@
 import { useRequestHeaders } from 'nuxt/app';
 import { useRoute } from 'vue-router';
 import { useStore } from '~/stores';
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
+
+// Error state to track application-level errors
+const appError = ref(null);
 
 // Get headers on server side with explicit header list
-const headers = useRequestHeaders(['host']);
-const route = useRoute();
-const store = useStore();
+try {
+  const headers = useRequestHeaders(['host']);
+  const route = useRoute();
+  const store = useStore();
 
-// Get domain name with fallback
-let domainName = headers.host || 'hvac-company.com';
-store.setDomainName(domainName);
+  // Get domain name with fallback
+  let domainName = headers.host || 'hvac-company.com';
 
-// Extract route parameters
-const page = route.params.page || '';
-const hasCity = !!route.query.city;
-const hasBzn = !!route.query.bzn;
-const hasAcc = !!route.query.acc;
-const hasMod = !!route.query.mod;
+  // Set domain name in store
+  try {
+    store.setDomainName(domainName);
+  } catch (error) {
+    console.error('Failed to set domain name:', error);
+    appError.value = 'Failed to set website information';
+  }
 
-// Set appropriate title
-store.setPageTitleFromRoute(
-  domainName,
-  page,
-  hasCity ? page : '',
-  hasBzn ? page : '',
-  hasAcc ? page : '',
-  hasMod ? page : ''
-);
+  // Extract route parameters
+  const page = route.params.page || '';
+  const hasCity = !!route.query.city;
+  const hasBzn = !!route.query.bzn;
+  const hasAcc = !!route.query.acc;
+  const hasMod = !!route.query.mod;
 
-// In client-side, re-evaluate using window.location if needed
-onMounted(() => {
-  if (process.client && !headers.host) {
-    const clientDomain = window.location.hostname;
-    console.log('Client Domain:', clientDomain);
-    store.setDomainName(clientDomain);
+  // Set appropriate title
+  try {
     store.setPageTitleFromRoute(
-      clientDomain,
+      domainName,
       page,
       hasCity ? page : '',
       hasBzn ? page : '',
       hasAcc ? page : '',
       hasMod ? page : ''
     );
+  } catch (error) {
+    console.error('Failed to set page title:', error);
+    appError.value = 'Failed to set page title';
   }
 
-  console.log('Domain Name:', store.domainName);
-  console.log('Title Name:', store.pageTitle);
-});
+  // In client-side, re-evaluate using window.location if needed
+  onMounted(() => {
+    try {
+      if (process.client && !headers.host) {
+        const clientDomain = window.location.hostname;
+        store.setDomainName(clientDomain);
+        store.setPageTitleFromRoute(
+          clientDomain,
+          page,
+          hasCity ? page : '',
+          hasBzn ? page : '',
+          hasAcc ? page : '',
+          hasMod ? page : ''
+        );
+      }
+
+      console.log('Domain Name:', store.domainName);
+      console.log('Title Name:', store.pageTitle);
+    } catch (error) {
+      console.error('Error during client-side initialization:', error);
+      appError.value = 'Error initializing application';
+    }
+  });
+} catch (error) {
+  console.error('Critical application initialization error:', error);
+  appError.value = 'Failed to initialize application';
+}
 </script>
 
 <style>
@@ -172,5 +205,25 @@ img {
   section {
     padding: 0 6rem 4rem
   }
+}
+
+/* Add this for error display */
+.error-container {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 0.25rem;
+  text-align: center;
+}
+
+.error-container button {
+  background-color: #721c24;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
 }
 </style>

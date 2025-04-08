@@ -1,34 +1,49 @@
 <template>
   <header class="show">
-    <h1 class="white b text-5xl text-center">{{ title }}</h1>
+    <h1 class="white b text-5xl text-center">{{ titleDisplay }}</h1>
     <NuxtLink to="/">
-      <img class="banner" src="~/assets/images/banner.png" :alt="title || 'Genie Air Conditioning and Heating'" />
+      <img class="banner" src="~/assets/images/banner.png" :alt="titleDisplay" @error="handleImageError"
+        v-if="!imageError" />
+      <div v-else class="image-placeholder">
+        <span>Genie Air Conditioning and Heating</span>
+      </div>
     </NuxtLink>
     <div class="mobile-column-reverse">
       <div class="video-row">
         <VideoSection />
       </div>
-      <div class="gap-4">
-        <a href="https://airconditioner.com/" class="main__enter b text-5xl white text-upper">
-          Enter
-        </a>
-        <span class="main__enter--bottom white text-xs">(Our Main Website)</span>
-      </div>
+      <EnterButton />
     </div>
   </header>
 </template>
 
 <script setup>
-// Changed imports to use ~ notation for Nuxt 3
 import { useStore } from "~/stores";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import VideoSection from '~/components/VideoSection.vue';
+import EnterButton from '~/components/EnterButton.vue';
+
+// Track image loading errors
+const imageError = ref(false);
 
 // Get state from store
 const store = useStore();
 
-// Use Vue 3 reactive computed property to access store state
-const title = computed(() => store.pageTitle || 'HVAC Company');
+// Safely handle title with error fallback
+const titleDisplay = computed(() => {
+  try {
+    return store.pageTitle || 'Air Conditioner';
+  } catch (error) {
+    console.error("Error getting page title:", error);
+    return 'Air Conditioner';
+  }
+});
+
+// Handle image loading errors
+const handleImageError = (e) => {
+  console.error("Failed to load banner image");
+  imageError.value = true;
+};
 </script>
 
 <style scoped>
@@ -188,5 +203,19 @@ h1 {
   h1 {
     font-size: 4.5rem;
   }
+}
+
+/* Add styles for the image placeholder */
+.image-placeholder {
+  width: 100%;
+  height: 100px;
+  background-color: #005efe;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+  margin: 1rem 0;
 }
 </style>

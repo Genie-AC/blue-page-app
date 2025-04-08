@@ -7,8 +7,7 @@ import {
   STREET_ADDRESS,
   SLUGS,
 } from "~/utils/constants";
-import formatTitle from "~/plugins/title-formatter";
-import { ref, computed } from 'vue';
+import formatTitle from "~/utils/formatters";
 
 export const useStore = defineStore("main", {
   state: () => ({
@@ -23,8 +22,9 @@ export const useStore = defineStore("main", {
     // Other state properties
     domainName: "hvac-company.com", // Default value
     currentPage: "",
-    pageTitle: "HVAC Company", // Default title
+    pageTitle: "Air Conditioner", // Safe default
     metaDescription: "",
+    errorMessage: "", // Track store-level errors
     isCity: false,
     isProd: false,
     isAcc: false,
@@ -42,19 +42,68 @@ export const useStore = defineStore("main", {
     getDomainName: (state) => state.domainName,
     getPageTitle: (state) => state.pageTitle,
     getMetaDescription: (state) => state.metaDescription,
+    getErrorMessage: (state) => state.errorMessage
   },
 
   actions: {
+    setDomainName(domain) {
+      try {
+        // Check if domain is localhost and use default
+        if (domain === 'localhost' || domain.includes('localhost:') || domain === '127.0.0.1') {
+          this.domainName = "hvac-company.com";
+        } else {
+          this.domainName = domain || "hvac-company.com";
+        }
+        console.log("Domain set to:", this.domainName);
+      } catch (error) {
+        console.error("Error setting domain name:", error);
+        this.errorMessage = "Failed to set domain name";
+        this.domainName = "hvac-company.com"; // Set default value
+      }
+    },
+    
+    setPageTitleFromRoute(domain, page = '', city = '', bzn = '', acc = '', mod = '') {
+      try {
+        console.log("Formatting title with:", { domain, page, city, bzn, acc, mod });
+        
+        // Format the title using formatter
+        const formattedTitle = formatTitle(domain, page, city, bzn, acc, mod);
+        
+        // Set the title in the store
+        this.pageTitle = formattedTitle || "Air Conditioner"; // Fallback if formatter returns undefined
+        
+        console.log("Title set to:", this.pageTitle);
+        return this.pageTitle;
+      } catch (error) {
+        console.error("Error formatting title:", error);
+        this.errorMessage = "Failed to format page title";
+        this.pageTitle = "Air Conditioner"; // Default title as fallback
+        return this.pageTitle;
+      }
+    },
+    
     async fetchCities() {
-      // Fetch categories from an API or other source
-      const cities = await $fetch("/api/cities");
-      this.cities = cities ?? this.cities;
+      try {
+        // Fetch categories from an API or other source
+        const cities = await $fetch("/api/cities");
+        this.cities = cities || this.cities;
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+        this.errorMessage = "Failed to load cities";
+        // Keep using the default CITIES from constants
+      }
     },
 
     async fetchProducts() {
-      // Fetch products from an API or other source
-      const products = await $fetch("/api/products");
-      this.products = products ?? this.products;
+      try {
+        // Fetch products from an API or other source
+        const products = await $fetch("/api/products");
+        this.products = products || this.products;
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        this.errorMessage = "Failed to load products";
+        // Keep using the default PRODUCTS from constants
+      }
     },
 
     updatePageInfo({ page, title, description }) {
@@ -62,25 +111,8 @@ export const useStore = defineStore("main", {
       this.pageTitle = title;
       this.metaDescription = description;
     },
-    setDomainName(domain) {
-      this.domainName = domain ?? "hvac-company.com";
-      console.log("Domain set to:", this.domainName);
-    },
-    setPageTitleFromRoute(domain, page = '', city = '', bzn = '', acc = '', mod = '') {
-      // Format the title using our formatter
-      console.log("Formatting title with:", { domain, page, city, bzn, acc, mod });
-      
-      try {
-        const formattedTitle = formatTitle(domain, page, city, bzn, acc, mod);
-        // Set the title in the store
-        this.pageTitle = formattedTitle;
-        console.log("Title set to:", this.pageTitle);
-      } catch (error) {
-        console.error("Error formatting title:", error);
-        this.pageTitle = "HVAC Company"; // Fallback
-      }
-      
-      return this.pageTitle;
+    clearError() {
+      this.errorMessage = "";
     }
   },
 });
