@@ -8,27 +8,27 @@
       <em>"One of the largest Wholesale Distributor's in the United States!"</em>
     </div>
     <div class="word__bkt">
-      <section>
+      <section v-if="showCities">
         <label>Cities We Service</label>
         <div id="cities">
           <NuxtLink v-for="city in cities" :key="city" :to="`/${city.replace(/ /g, '-')}?city=1`">{{ city }}</NuxtLink>
         </div>
       </section>
-      <section>
+      <section v-if="showProducts">
         <label>Products We Carry</label>
         <div>
           <NuxtLink v-for="product in products" :key="product" :to="`/${product.replace(/ /g, '-')}?mod=1`">{{ product
             }}</NuxtLink>
         </div>
       </section>
-      <section>
+      <section v-if="showAccessories">
         <label>Accessories We Carry</label>
         <div>
           <NuxtLink v-for="accessory in accessories" :key="accessory" :to="`/${accessory.replace(/ /g, '-')}?acc=1`">{{
             accessory }}</NuxtLink>
         </div>
       </section>
-      <section>
+      <section v-if="showBusinesses">
         <label>Our Business Services</label>
         <div>
           <NuxtLink v-for="business in businesses" :key="business" :to="`/${business.replace(/ /g, '-')}?bzn=1`">{{
@@ -41,7 +41,7 @@
 
 <script setup>
 import { useStore } from "~/stores";
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 // Get state from store
 const store = useStore();
@@ -52,10 +52,55 @@ const cities = computed(() => store.cities);
 const products = computed(() => store.products);
 const accessories = computed(() => store.accessories);
 const businesses = computed(() => store.businesses);
-const isCity = computed(() => store.isCity);
-const isProd = computed(() => store.isProd);
-const isAcc = computed(() => store.isAcc);
-const isBzn = computed(() => store.isBzn);
+
+// Category visibility flags
+const showCities = ref(true);
+const showProducts = ref(true);
+const showAccessories = ref(true);
+const showBusinesses = ref(true);
+
+// Function to check if domain matches any category items
+const checkDomainForCategoryMatches = () => {
+  const domain = window.location.hostname.toLowerCase();
+
+  // Extract keywords from domain (remove common TLDs and split by non-alphanumeric characters)
+  const domainBase = domain.replace(/\.(com|org|net|co|io|app)$/, '');
+  const keywords = domainBase.split(/[^a-z0-9]/).filter(k => k.length > 3);
+
+  // Check if any keywords match with products
+  const productMatches = products.value.some(product => {
+    return keywords.some(keyword =>
+      product.toLowerCase().includes(keyword) ||
+      keyword.includes(product.toLowerCase().replace(/\s+/g, ''))
+    );
+  });
+
+  // Check if any keywords match with accessories
+  const accessoryMatches = accessories.value.some(accessory => {
+    return keywords.some(keyword =>
+      accessory.toLowerCase().includes(keyword) ||
+      keyword.includes(accessory.toLowerCase().replace(/\s+/g, ''))
+    );
+  });
+
+  // Check if any keywords match with businesses
+  const businessMatches = businesses.value.some(business => {
+    return keywords.some(keyword =>
+      business.toLowerCase().includes(keyword) ||
+      keyword.includes(business.toLowerCase().replace(/\s+/g, ''))
+    );
+  });
+
+  // Hide categories that match with domain keywords
+  showProducts.value = !productMatches;
+  showAccessories.value = !accessoryMatches;
+  showBusinesses.value = !businessMatches;
+};
+
+// Run the check on mount
+onMounted(() => {
+  checkDomainForCategoryMatches();
+});
 </script>
 
 <style scoped>
