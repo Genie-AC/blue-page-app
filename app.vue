@@ -55,7 +55,7 @@ try {
   };
 
   // Get domain name with fallback
-  let domainName = headers.host || 'hvac-company.com';
+  let domainName = headers.host || 'splitsystemnear.com';
 
   // Set domain name in store
   try {

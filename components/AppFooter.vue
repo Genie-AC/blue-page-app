@@ -8,27 +8,27 @@
       <em>"One of the largest Wholesale Distributor's in the United States!"</em>
     </div>
     <div class="word__bkt">
-      <section v-if="!isCity">
+      <section>
         <label>Cities We Service</label>
         <div id="cities">
           <NuxtLink v-for="city in cities" :key="city" :to="`/${city.replace(/ /g, '-')}?city=1`">{{ city }}</NuxtLink>
         </div>
       </section>
-      <section v-if="!isProd">
+      <section>
         <label>Products We Carry</label>
         <div>
           <NuxtLink v-for="product in products" :key="product" :to="`/${product.replace(/ /g, '-')}?mod=1`">{{ product
-          }}</NuxtLink>
+            }}</NuxtLink>
         </div>
       </section>
-      <section v-if="!isAcc && !isBzn">
+      <section>
         <label>Accessories We Carry</label>
         <div>
           <NuxtLink v-for="accessory in accessories" :key="accessory" :to="`/${accessory.replace(/ /g, '-')}?acc=1`">{{
             accessory }}</NuxtLink>
         </div>
       </section>
-      <section v-if="!isBzn && !isAcc">
+      <section>
         <label>Our Business Services</label>
         <div>
           <NuxtLink v-for="business in businesses" :key="business" :to="`/${business.replace(/ /g, '-')}?bzn=1`">{{

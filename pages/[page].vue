@@ -89,7 +89,7 @@ const fetchPageData = (page) => {
     // Set currentUrl
     currentUrl.value = process.client
       ? window.location.hostname
-      : store.domainName || 'hvac-company.com';
+      : store.domainName || 'splitsystemnear.com';
 
   } catch (error) {
     console.error('Error fetching page data:', error);

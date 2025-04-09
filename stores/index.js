@@ -20,7 +20,7 @@ export const useStore = defineStore("main", {
     streetAddress: STREET_ADDRESS,
 
     // Other state properties
-    domainName: "hvac-company.com", // Default value
+    domainName: "splitsystemnear.com", // Default value
     currentPage: "",
     pageTitle: "Air Conditioner", // Safe default
     metaDescription: "",
@@ -50,15 +50,15 @@ export const useStore = defineStore("main", {
       try {
         // Check if domain is localhost and use default
         if (domain === 'localhost' || domain.includes('localhost:') || domain === '127.0.0.1') {
-          this.domainName = "hvac-company.com";
+          this.domainName = "splitsystemnear.com";
         } else {
-          this.domainName = domain || "hvac-company.com";
+          this.domainName = domain || "splitsystemnear.com";
         }
         console.log("Domain set to:", this.domainName);
       } catch (error) {
         console.error("Error setting domain name:", error);
         this.errorMessage = "Failed to set domain name";
-        this.domainName = "hvac-company.com"; // Set default value
+        this.domainName = "splitsystemnear.com"; // Set default value
       }
     },
     
