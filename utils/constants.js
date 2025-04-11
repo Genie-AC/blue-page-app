@@ -4,6 +4,14 @@ export const STATE = "CA";
 export const ZIP = "91411";
 export const STREET_ADDRESS = `${STREET_NUMBER}, ${CITY}, ${STATE} ${ZIP}`;
 
+// Domains that are allowed to display the video section
+export const VIDEO_DOMAIN_WHITELIST = [
+	"splitsystemnear.com",
+	"splitsystemsnear.com",
+	"localhost",
+	"127.0.0.1",
+];
+
 // Adjacent location words for title formatting
 export const ADJACENT_LOCATION_WORDS = [
 	"near",

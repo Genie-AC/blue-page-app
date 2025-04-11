@@ -8,10 +8,36 @@ import {
 	CITIES,
 	DOMAIN_TITLE_MAPPINGS,
 	createDomainTitleMap,
+	VIDEO_DOMAIN_WHITELIST,
 } from "~/utils/constants";
 
 // Create the domain title map once
 const domainTitleRegexMap = createDomainTitleMap();
+
+/**
+ * Checks if the current domain is in the video whitelist
+ *
+ * @param {string} domain - The current domain name
+ * @returns {boolean} - True if the domain is in the whitelist
+ */
+export function isVideoAllowedForDomain(domain = "") {
+	// Handle empty domain case
+	if (!domain || typeof domain !== "string") {
+		return false;
+	}
+
+	// Remove protocol and www if present
+	const cleanDomain = domain
+		.replace(/^(https?:\/\/)?(www\.)?/, "")
+		.split("/")[0]
+		.split(":")[0];
+
+	// Check against whitelist
+	return VIDEO_DOMAIN_WHITELIST.some(
+		(allowedDomain) =>
+			cleanDomain === allowedDomain || cleanDomain.endsWith(`.${allowedDomain}`)
+	);
+}
 
 /**
  * Formats a domain name into a readable page title with proper capitalization

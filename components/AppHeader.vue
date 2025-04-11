@@ -2,14 +2,14 @@
   <header class="show">
     <h1 class="white b text-5xl text-center">{{ titleDisplay }}</h1>
     <NuxtLink to="/">
-      <img class="banner" src="~/assets/images/banner.png" :alt="titleDisplay" @error="handleImageError"
-        v-if="!imageError" />
+      <img v-if="!imageError" class="banner" src="~/assets/images/banner.png" :alt="titleDisplay"
+        @error="handleImageError">
       <div v-else class="image-placeholder">
         <span>Genie Air Conditioning and Heating</span>
       </div>
     </NuxtLink>
     <div class="mobile-column-reverse">
-      <div class="video-row">
+      <div v-if="showVideos" class="video-row">
         <VideoSection />
       </div>
       <EnterButton />
@@ -19,12 +19,16 @@
 
 <script setup>
 import { useStore } from "~/stores";
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import VideoSection from '~/components/VideoSection.vue';
 import EnterButton from '~/components/EnterButton.vue';
+import { isVideoAllowedForDomain } from '~/utils/formatters';
 
 // Track image loading errors
 const imageError = ref(false);
+
+// State for video visibility
+const showVideos = ref(false);
 
 // Get state from store
 const store = useStore();
@@ -36,6 +40,18 @@ const titleDisplay = computed(() => {
   } catch (error) {
     console.error("Error getting page title:", error);
     return 'Air Conditioner';
+  }
+});
+
+// Check if videos should be displayed based on domain
+onMounted(() => {
+  try {
+    const currentDomain = window.location.hostname;
+    showVideos.value = isVideoAllowedForDomain(currentDomain);
+    console.log(`Video display for domain ${currentDomain}: ${showVideos.value ? 'Enabled' : 'Disabled'}`);
+  } catch (error) {
+    console.error("Error checking domain for video display:", error);
+    showVideos.value = false;
   }
 });
 
