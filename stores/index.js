@@ -29,6 +29,7 @@ export const useStore = defineStore("main", {
 		isProd: false,
 		isAcc: false,
 		isBzn: false,
+		isKw: false, // For popular keywords
 	}),
 
 	getters: {
@@ -72,7 +73,8 @@ export const useStore = defineStore("main", {
 			isCity = false,
 			isBzn = false,
 			isAcc = false,
-			isMod = false
+			isMod = false,
+			isKw = false
 		) {
 			try {
 				// Set flags in state
@@ -80,6 +82,7 @@ export const useStore = defineStore("main", {
 				this.isBzn = isBzn;
 				this.isAcc = isAcc;
 				this.isProd = isMod;
+				this.isKw = isKw;
 
 				console.log("Setting page title with parameters:", {
 					domain,
@@ -88,6 +91,7 @@ export const useStore = defineStore("main", {
 					isBzn,
 					isAcc,
 					isMod,
+					isKw,
 				});
 
 				// Format the title using our formatter - pass page as the appropriate parameter
@@ -97,7 +101,8 @@ export const useStore = defineStore("main", {
 					isCity ? page : "", // Only pass page as city if isCity flag is true
 					isBzn ? page : "", // Only pass page as business if isBzn flag is true
 					isAcc ? page : "", // Only pass page as accessory if isAcc flag is true
-					isMod ? page : "" // Only pass page as module if isMod flag is true
+					isMod ? page : "", // Only pass page as module if isMod flag is true
+					isKw ? page : "" // Only pass page as popular keyword if isKw flag is true
 				);
 
 				// Set the title in the store

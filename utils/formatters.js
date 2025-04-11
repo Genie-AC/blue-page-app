@@ -49,6 +49,7 @@ export function isVideoAllowedForDomain(domain = "") {
  * @param {string} bzn - The business name, if any
  * @param {string} acc - The accessory name, if any
  * @param {string} mod - The module name, if any
+ * @param {string} kw - The keyword, if any
  * @returns {string} - The formatted page title
  */
 export default function formatTitle(
@@ -57,7 +58,8 @@ export default function formatTitle(
 	city = "",
 	bzn = "",
 	acc = "",
-	mod = ""
+	mod = "",
+	kw = ""
 ) {
 	try {
 		// Get sanitized domain with fallbacks
@@ -77,6 +79,7 @@ export default function formatTitle(
 			bzn,
 			acc,
 			mod,
+			kw,
 			locationInfo
 		);
 
@@ -337,6 +340,7 @@ function checkAdjacentLocationWords(title) {
  * @param {string} bzn - The business name
  * @param {string} acc - The accessory name
  * @param {string} mod - The module name
+ * @param {string} kw - The keyword, if any
  * @param {Object} locationInfo - Information about location words in the title
  * @returns {string} - The complete title
  */
@@ -347,26 +351,28 @@ function buildFullTitle(
 	bzn,
 	acc,
 	mod,
+	kw,
 	locationInfo = {}
 ) {
 	let fullTitle = baseTitle;
 	const formatParam = (param) => (param ? param.replace(/-/g, " ") : "");
 
 	// Special handling for content pages with location words
-	// Content pages are any pages with page name, business, accessory, or module parameters
-	if (locationInfo.nearInTitle && (page || bzn || acc || mod)) {
+	// Content pages are any pages with page name, business, accessory, module or keyword parameters
+	if (locationInfo.nearInTitle && (page || bzn || acc || mod || kw)) {
 		// Extract the base part of the title (without the location word)
 		const basePart = baseTitle.replace(
 			new RegExp(`\\s${locationInfo.locationWord}\\s*$`, "i"),
 			""
 		);
 
-		// Determine which content to integrate (priority: acc > mod > page > bzn)
+		// Determine which content to integrate (priority: acc > mod > page > bzn > kw)
 		let contentParam = "";
 		if (acc) contentParam = formatParam(acc);
 		else if (mod) contentParam = formatParam(mod);
 		else if (page) contentParam = formatParam(page);
 		else if (bzn) contentParam = formatParam(bzn);
+		else if (kw) contentParam = formatParam(kw);
 
 		// Reconstruct the title with content integrated before location word
 		fullTitle = `${basePart} ${contentParam} ${locationInfo.locationWord}`;
@@ -386,6 +392,8 @@ function buildFullTitle(
 			fullTitle += ` for ${formatParam(acc)}`;
 		if (mod && contentParam !== formatParam(mod))
 			fullTitle += ` ${formatParam(mod)}`;
+		if (kw && contentParam !== formatParam(kw))
+			fullTitle += ` ${formatParam(kw)}`;
 
 		return fullTitle;
 	}
@@ -405,9 +413,18 @@ function buildFullTitle(
 	if (bzn) fullTitle += ` for ${formatParam(bzn)}`;
 	if (acc) fullTitle += ` for ${formatParam(acc)}`;
 	if (mod) fullTitle += ` ${formatParam(mod)}`;
+	if (kw) fullTitle += ` ${formatParam(kw)}`;
 
 	// Add "You" if title ends with a location word and no parameters are specified
-	if (locationInfo.nearInTitle && !city && !bzn && !acc && !mod && !page) {
+	if (
+		locationInfo.nearInTitle &&
+		!city &&
+		!bzn &&
+		!acc &&
+		!mod &&
+		!page &&
+		!kw
+	) {
 		fullTitle += " You";
 	}
 
