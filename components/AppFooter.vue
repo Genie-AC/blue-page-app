@@ -2,7 +2,7 @@
   <footer class="show">
     <div class="footer__copy">
       <a href="https://airconditioner.com/">
-        <img src="~/assets/images/genie-logo-ribbon-2.svg" alt="Genie Air" />
+        <img src="~/assets/images/genie-logo-ribbon-2.svg" alt="Genie Air">
       </a>
       <strong>{{ title }}</strong>
       <em>"One of the largest Wholesale Distributor's in the United States!"</em>
@@ -18,7 +18,7 @@
         <label>Products We Carry</label>
         <div>
           <NuxtLink v-for="product in products" :key="product" :to="`/${product.replace(/ /g, '-')}?mod=1`">{{ product
-            }}</NuxtLink>
+          }}</NuxtLink>
         </div>
       </section>
       <section v-if="showAccessories">
@@ -35,6 +35,13 @@
             business }}</NuxtLink>
         </div>
       </section>
+      <section v-if="showDuctedKeywords">
+        <label>What Our Customers Look For</label>
+        <div id="ducted-keywords">
+          <NuxtLink v-for="keyword in ductedKeywords" :key="keyword" :to="`/${keyword.replace(/ /g, '-')}?kw=1`">{{
+            keyword }}</NuxtLink>
+        </div>
+      </section>
     </div>
   </footer>
 </template>
@@ -42,6 +49,7 @@
 <script setup>
 import { useStore } from "~/stores";
 import { computed, onMounted, ref } from "vue";
+import { DUCTED_KEYWORDS } from "~/utils/constants";
 
 // Get state from store
 const store = useStore();
@@ -52,12 +60,14 @@ const cities = computed(() => store.cities);
 const products = computed(() => store.products);
 const accessories = computed(() => store.accessories);
 const businesses = computed(() => store.businesses);
+const ductedKeywords = ref(DUCTED_KEYWORDS);
 
 // Category visibility flags
 const showCities = ref(true);
 const showProducts = ref(true);
 const showAccessories = ref(true);
 const showBusinesses = ref(true);
+const showDuctedKeywords = ref(false);
 
 // Function to check if domain matches any category items
 const checkDomainForCategoryMatches = () => {
@@ -66,6 +76,9 @@ const checkDomainForCategoryMatches = () => {
   // Extract keywords from domain (remove common TLDs and split by non-alphanumeric characters)
   const domainBase = domain.replace(/\.(com|org|net|co|io|app)$/, '');
   const keywords = domainBase.split(/[^a-z0-9]/).filter(k => k.length > 3);
+
+  // Check if domain contains "duct" or "ducted"
+  showDuctedKeywords.value = domain.includes('duct');
 
   // Check if any keywords match with products
   const productMatches = products.value.some(product => {
@@ -173,6 +186,10 @@ footer img {
 }
 
 #cities {
+  gap: 8px 1.5em;
+}
+
+#ducted-keywords {
   gap: 8px 1.5em;
 }
 
