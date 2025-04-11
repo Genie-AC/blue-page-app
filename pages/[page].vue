@@ -45,7 +45,7 @@
 import { useRoute } from 'vue-router';
 import { useStore } from '~/stores';
 import { onMounted, ref, computed } from 'vue';
-import { DEFAULT_DOMAIN } from '~/constants';
+import { DEFAULT_DOMAIN } from '~/utils/constants';
 // Error state
 const pageError = ref(null);
 const isLoading = ref(true);
