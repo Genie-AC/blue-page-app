@@ -6,53 +6,71 @@ export const STREET_ADDRESS = `${STREET_NUMBER}, ${CITY}, ${STATE} ${ZIP}`;
 
 // Adjacent location words for title formatting
 export const ADJACENT_LOCATION_WORDS = [
-  "near",
-  "in",
-  "around",
-  "close to",
-  "nearby",
-  "within",
-  "surrounding",
-  "adjacent to",
-  "next to",
-  "by",
-  "at",
-  "in the vicinity of",
+	"near",
+	"in",
+	"around",
+	"close to",
+	"nearby",
+	"within",
+	"surrounding",
+	"adjacent to",
+	"next to",
+	"by",
+	"at",
+	"in the vicinity of",
 ];
 
 // Default domain to use as fallback
 export const DEFAULT_DOMAIN = "splitsystemnear.com";
 
 // Localhost patterns that should be replaced with the default domain
-export const LOCALHOST_PATTERNS = ['localhost', '127.0.0.1'];
+export const LOCALHOST_PATTERNS = ["localhost", "127.0.0.1"];
 
 // Special terms that should maintain specific formatting
 export const SPECIAL_TERMS = {
-  'ptac': 'PTAC',
-  'hvac': 'HVAC',
-  'ac': 'AC',
-  'rv': 'RV',
-  'minisplit': 'Mini Split',
-  'minisplits': 'Mini Splits',
-  'splitsystem': 'Split System',
-  'splitsystems': 'Split Systems',
-  'heatpump': 'Heat Pump',
-  'heatpumps': 'Heat Pumps',
-  'airconditioner': 'Air Conditioner',
-  'airconditioners': 'Air Conditioners',
-  'airconditioning': 'Air Conditioning',
-  'airconditionerunit': 'Air Conditioner Unit',
-  'airconditionerunits': 'Air Conditioner Units',
+	ptac: "PTAC",
+	hvac: "HVAC",
+	ac: "AC",
+	rv: "RV",
+	minisplit: "Mini Split",
+	minisplits: "Mini Splits",
+	splitsystem: "Split System",
+	splitsystems: "Split Systems",
+	heatpump: "Heat Pump",
+	heatpumps: "Heat Pumps",
+	airconditioner: "Air Conditioner",
+	airconditioners: "Air Conditioners",
+	airconditioning: "Air Conditioning",
+	airconditionerunit: "Air Conditioner Unit",
+	airconditionerunits: "Air Conditioner Units",
 };
 
 // Small words that should remain lowercase in titles (unless first or last word)
 export const SMALL_WORDS = [
-  'a', 'an', 'and', 'as', 'at', 'but', 'by', 'en', 'for', 'if',
-  'in', 'nor', 'of', 'on', 'or', 'per', 'the', 'to', 'vs', 'via'
+	"a",
+	"an",
+	"and",
+	"as",
+	"at",
+	"but",
+	"by",
+	"en",
+	"for",
+	"if",
+	"in",
+	"nor",
+	"of",
+	"on",
+	"or",
+	"per",
+	"the",
+	"to",
+	"vs",
+	"via",
 ];
 
 // Words that should always be uppercase
-export const ALWAYS_UPPERCASE = ['HVAC', 'AC', 'PTAC', 'RV'];
+export const ALWAYS_UPPERCASE = ["HVAC", "AC", "PTAC", "RV"];
 
 export const CITIES = [
 	"Anaheim",
@@ -162,7 +180,7 @@ export const SLUGS = [
 	"Air Conditioner",
 	"Mini Split",
 	"Heat Pump",
-	"Split System"
+	"Split System",
 ];
 
 export const PRODUCTS = [
@@ -289,3 +307,26 @@ export const BUSINESSES = [
 	"For Apartments",
 ];
 
+export const createDomainTitleMap = () => {
+	const map = new Map();
+
+	// Add mappings with regex patterns
+	map.set(/^acsplitservices?\.com$/, "AC Split Services");
+	map.set(/^splitsystems?near\.com$/, "Split System Near");
+	map.set(/^heatpumps?installations?\.com$/, "Heat Pump Installation");
+	map.set(/^acsplitsystems?\.com$/, "AC Split System");
+	map.set(/^(mini)?splits?systems?\.com$/, "Split System");
+	map.set(/^heatpumps?(mini)?splits?\.com$/, "Heat Pump Mini Split");
+
+	// Add more mappings as needed
+
+	return map;
+};
+
+// Keep your original mappings for exact matches
+export const DOMAIN_TITLE_MAPPINGS = {
+	"acsplitservices.com": "AC Split Services",
+	"splitsystemnear.com": "Split System Near",
+	"heatpumpinstallation.com": "Heat Pump Installation",
+	// Add more domain-to-title mappings as needed
+};
