@@ -21,7 +21,7 @@ export const ADJACENT_LOCATION_WORDS = [
 ];
 
 // Default domain to use as fallback
-export const DEFAULT_DOMAIN = "splitsystemnear.com";
+export const DEFAULT_DOMAIN = "airconditioner.com";
 
 // Localhost patterns that should be replaced with the default domain
 export const LOCALHOST_PATTERNS = ["localhost", "127.0.0.1"];
@@ -311,6 +311,7 @@ export const createDomainTitleMap = () => {
 	const map = new Map();
 
 	// Add mappings with regex patterns
+	map.set(/^acminisplits?near\.com$/, "AC Mini Split Near");
 	map.set(/^acsplitservices?\.com$/, "AC Split Services");
 	map.set(/^splitsystems?near\.com$/, "Split System Near");
 	map.set(/^heatpumps?installations?\.com$/, "Heat Pump Installation");

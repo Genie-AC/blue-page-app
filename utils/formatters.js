@@ -132,53 +132,140 @@ function getDomainTitleMapping(domain) {
  * @returns {string} - The formatted base title
  */
 function formatDomainToBaseTitle(domain) {
-	// Try to get the title from our mappings
+	// Try to get the title from our mappings first (as a fallback override)
 	const mappedTitle = getDomainTitleMapping(domain);
 	if (mappedTitle) {
 		return mappedTitle;
 	}
 
-	// If no mapping exists, proceed with the dynamic formatting
-	// Capitalize the first letter of the domain name
-	const root = domain.charAt(0).toUpperCase() + domain.slice(1);
+	// Remove TLD and convert to lowercase for processing
+	const domainBase = domain
+		.replace(/\.(com|org|net|io|app)$/, "")
+		.toLowerCase();
 
-	// Apply basic formatting
-	let baseTitle = root
-		.replace(/([A-Z])/g, " $1") // Add spaces before uppercase letters
-		.replace(/\..*$/, ""); // Remove everything after the first dot
+	// Step 1: Dictionary-based word recognition
+	// Define common industry terms to look for
+	const industryTerms = [
+		"ac",
+		"hvac",
+		"split",
+		"splits",
+		"system",
+		"systems",
+		"mini",
+		"heat",
+		"pump",
+		"pumps",
+		"installation",
+		"service",
+		"services",
+		"repair",
+		"repairs",
+		"air",
+		"distributor",
+		"distributors",
+		"wholesaler",
+		"wholesalers",
+		"wholesale",
+		"conditioning",
+		"conditioner",
+		"conditioners",
+		"furnace",
+		"furnaces",
+		"unit",
+		"units",
+	];
 
-	// Add spaces between any word and location words when they're adjacent
-	// Create a pattern that matches any word boundary followed by any location word
-	const locationPattern = new RegExp(
-		`(\\w)(${ADJACENT_LOCATION_WORDS.join("|")})\\b`,
-		"gi"
-	);
-	baseTitle = baseTitle.replace(locationPattern, "$1 $2");
+	// Sort terms by length (descending) to match longest terms first
+	industryTerms.sort((a, b) => b.length - a.length);
 
-	// Also handle the reverse case (location word followed by another word)
-	const reverseLocationPattern = new RegExp(
-		`\\b(${ADJACENT_LOCATION_WORDS.join("|")})(\\w)`,
-		"gi"
-	);
-	baseTitle = baseTitle.replace(reverseLocationPattern, "$1 $2");
+	// Step 2: Break the domain into recognized words
+	let remainingText = domainBase;
+	let recognizedWords = [];
 
-	// Special patterns for common domain naming conventions
-	baseTitle = baseTitle
-		.replace(/(\w)([A-Z][a-z])/g, "$1 $2") // Split camelCase
-		.replace(/([a-z])([A-Z])/g, "$1 $2") // More camelCase handling
-		.replace(/Ac(\s|$)/gi, "AC$1") // Correct AC abbreviation
-		.replace(/Hvac/gi, "HVAC") // Correct HVAC abbreviation
-		.replace(/(\d+)([a-z])/gi, "$1 $2") // Space between numbers and letters
-		.replace(/([a-z])(\d+)/gi, "$1 $2"); // Space between letters and numbers
+	// Match known terms in the domain
+	while (remainingText.length > 0) {
+		let matched = false;
 
-	// Replace special terms
+		// Try to match industry terms
+		for (const term of industryTerms) {
+			if (remainingText.startsWith(term)) {
+				recognizedWords.push(term);
+				remainingText = remainingText.substring(term.length);
+				matched = true;
+				break;
+			}
+		}
+
+		// Try to match location words
+		if (!matched) {
+			for (const locWord of ADJACENT_LOCATION_WORDS) {
+				if (remainingText.startsWith(locWord.toLowerCase())) {
+					recognizedWords.push(locWord.toLowerCase());
+					remainingText = remainingText.substring(locWord.length);
+					matched = true;
+					break;
+				}
+			}
+		}
+
+		// If no match, take the next character and continue
+		if (!matched) {
+			if (remainingText.length > 4) {
+				// Try to find the next potential word boundary
+				const nextIndex = Math.min(
+					...industryTerms
+						.map((term) => remainingText.indexOf(term))
+						.filter((idx) => idx > 0)
+				);
+
+				if (nextIndex < remainingText.length && nextIndex > 0) {
+					recognizedWords.push(remainingText.substring(0, nextIndex));
+					remainingText = remainingText.substring(nextIndex);
+				} else {
+					recognizedWords.push(remainingText);
+					remainingText = "";
+				}
+			} else {
+				recognizedWords.push(remainingText);
+				remainingText = "";
+			}
+		}
+	}
+
+	// Step 3: Apply specific formatting rules
+	let formattedWords = recognizedWords.map((word) => {
+		// Handle abbreviations
+		if (word.toLowerCase() === "ac") return "AC";
+		if (word.toLowerCase() === "hvac") return "HVAC";
+
+		// Capitalize first letter of other words
+		return word.charAt(0).toUpperCase() + word.slice(1);
+	});
+
+	// Step 4: Handle special word combinations
+	let baseTitle = formattedWords.join(" ");
+
+	// Ensure "Heat Pump" is together
+	baseTitle = baseTitle.replace(/Heat\s+Pump/gi, "Heat Pump");
+
+	// Ensure "Mini Split" is together
+	baseTitle = baseTitle.replace(/Mini\s+Split/gi, "Mini Split");
+
+	// Ensure location words have proper spacing
+	ADJACENT_LOCATION_WORDS.forEach((locWord) => {
+		const lcLocWord = locWord.toLowerCase();
+		const pattern = new RegExp(`(\\w)${lcLocWord}`, "gi");
+		baseTitle = baseTitle.replace(pattern, `$1 ${locWord}`);
+	});
+
+	// Step 5: Apply special term replacements
 	Object.entries(SPECIAL_TERMS).forEach(([term, replacement]) => {
 		const regex = new RegExp(term, "gi");
 		baseTitle = baseTitle.replace(regex, replacement);
 	});
 
-	// Replace hyphens with spaces
-	return baseTitle.replace(/-/g, " ");
+	return baseTitle;
 }
 
 /**

@@ -28,11 +28,11 @@
       </p>
       <address class="flex column gap-4">
         <p class="inline text-center">
-          <em class="fa-solid fa-location-dot"></em>&thinsp;15041 Calvert Street&ensp;&bull; Van Nuys, CA 91411
+          <em class="fa-solid fa-location-dot" />&thinsp;15041 Calvert Street&ensp;&bull; Van Nuys, CA 91411
         </p>
         <p>
           <a href="tel:8187854151" class="inline">
-            <i class="fa-solid fa-phone"></i>&thinsp;(818) 785-4151
+            <i class="fa-solid fa-phone" />&thinsp;(818) 785-4151
           </a>
         </p>
       </address>
@@ -45,7 +45,7 @@
 import { useRoute } from 'vue-router';
 import { useStore } from '~/stores';
 import { onMounted, ref, computed } from 'vue';
-
+import { DEFAULT_DOMAIN } from '~/constants';
 // Error state
 const pageError = ref(null);
 const isLoading = ref(true);
@@ -87,9 +87,9 @@ const fetchPageData = (page) => {
     }
 
     // Set currentUrl
-    currentUrl.value = process.client
+    currentUrl.value = import.meta.client
       ? window.location.hostname
-      : store.domainName || 'splitsystemnear.com';
+      : store.domainName || DEFAULT_DOMAIN;
 
   } catch (error) {
     console.error('Error fetching page data:', error);
