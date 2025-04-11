@@ -613,7 +613,7 @@ $meta_content = "$root parent company Genie Air Conditioning &amp; Heating Inc. 
     <span class='mainFooter show'></span>
     <footer class="show">
         <div class='footer__copy'><a href="https://airconditioner.com/"><img
-                    src="https://<? echo $root ?>/genie-logo-ribbon-2.svg" alt="Genie Air"></a><strong>
+                    src="./genie-logo-ribbon-2.svg" alt="Genie Air"></a><strong>
                 <? echo "$title" ?>
             </strong><em>"One of the largest Wholesale Distributor's in the United States!"</em></div>
         <div class='word__bkt'>
