@@ -21,7 +21,7 @@ import { useRequestHeaders } from 'nuxt/app';
 import { useRoute } from 'vue-router';
 import { useStore } from '~/stores';
 import { onMounted, ref, watch } from 'vue';
-
+import { DEFAULT_DOMAIN } from '~/utils/constants';
 // Error state to track application-level errors
 const appError = ref(null);
 
@@ -55,7 +55,7 @@ try {
   };
 
   // Get domain name with fallback
-  let domainName = headers.host || 'splitsystemnear.com';
+  const domainName = headers.host || DEFAULT_DOMAIN;
 
   // Set domain name in store
   try {
@@ -80,7 +80,7 @@ try {
   // In client-side, re-evaluate using window.location if needed
   onMounted(() => {
     try {
-      if (process.client && !headers.host) {
+      if (import.meta.client && !headers.host) {
         const clientDomain = window.location.hostname;
         store.setDomainName(clientDomain);
         updateTitleFromRoute();

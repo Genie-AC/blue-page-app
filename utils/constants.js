@@ -30,7 +30,7 @@ export const ADJACENT_LOCATION_WORDS = [
 
 // Default domain to use as fallback
 export const DEFAULT_DOMAIN = "airconditioner.com";
-
+export const DEFAULT_TITLE = "Air Conditioner";
 // Localhost patterns that should be replaced with the default domain
 export const LOCALHOST_PATTERNS = ["localhost", "127.0.0.1"];
 

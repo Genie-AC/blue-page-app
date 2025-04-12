@@ -6,6 +6,8 @@ import {
 	BUSINESSES,
 	STREET_ADDRESS,
 	SLUGS,
+	DEFAULT_DOMAIN,
+	DEFAULT_TITLE,
 } from "~/utils/constants";
 import formatTitle from "~/utils/formatters";
 
@@ -20,9 +22,9 @@ export const useStore = defineStore("main", {
 		streetAddress: STREET_ADDRESS,
 
 		// Other state properties
-		domainName: "airconditioner.com", // Default value
+		domainName: DEFAULT_DOMAIN, // Default value
 		currentPage: "",
-		pageTitle: "Air Conditioner", // Safe default
+		pageTitle: DEFAULT_TITLE, // Safe default
 		metaDescription: "",
 		errorMessage: "", // Track store-level errors
 		isCity: false,
@@ -55,15 +57,15 @@ export const useStore = defineStore("main", {
 					domain.includes("localhost:") ||
 					domain === "127.0.0.1"
 				) {
-					this.domainName = "airconditioner.com";
+					this.domainName = DEFAULT_DOMAIN;
 				} else {
-					this.domainName = domain || "airconditioner.com";
+					this.domainName = domain || DEFAULT_DOMAIN;
 				}
 				console.log("Domain set to:", this.domainName);
 			} catch (error) {
 				console.error("Error setting domain name:", error);
 				this.errorMessage = "Failed to set domain name";
-				this.domainName = "airconditioner.com"; // Set default value
+				this.domainName = DEFAULT_DOMAIN; // Set default value
 			}
 		},
 
@@ -106,12 +108,12 @@ export const useStore = defineStore("main", {
 				);
 
 				// Set the title in the store
-				this.pageTitle = formattedTitle || "Air Conditioner";
+				this.pageTitle = formattedTitle || DEFAULT_TITLE;
 				console.log("Title set to:", this.pageTitle);
 			} catch (error) {
 				console.error("Error formatting title:", error);
 				this.errorMessage = "Failed to format page title";
-				this.pageTitle = "Air Conditioner"; // Default title as fallback
+				this.pageTitle = DEFAULT_TITLE; // Default title as fallback
 			}
 
 			return this.pageTitle;
