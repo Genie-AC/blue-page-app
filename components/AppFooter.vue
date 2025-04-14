@@ -35,11 +35,37 @@
             business }}</NuxtLink>
         </div>
       </section>
+
+      <!-- Ducted Keywords Section -->
       <section v-if="showDuctedKeywords">
-        <label>What Our Customers Look For</label>
+        <label>Ducted Systems</label>
         <div id="ducted-keywords">
-          <NuxtLink v-for="keyword in ductedKeywords" :key="keyword" :to="`/${keyword.replace(/ /g, '-')}?kw=1`">{{
-            keyword }}</NuxtLink>
+          <NuxtLink v-for="keyword in keywordSets.ducted" :key="keyword" :to="`/${keyword.replace(/ /g, '-')}?kw=1`"
+            :title="`Ducted ${keyword}`">
+            {{ keyword }}
+          </NuxtLink>
+        </div>
+      </section>
+
+      <!-- Split Keywords Section -->
+      <section v-if="showSplitKeywords">
+        <label>Split System Solutions</label>
+        <div id="split-keywords">
+          <NuxtLink v-for="keyword in keywordSets.split" :key="keyword" :to="`/${keyword.replace(/ /g, '-')}?kw=1`"
+            :title="`Split ${keyword}`">
+            {{ keyword }}
+          </NuxtLink>
+        </div>
+      </section>
+
+      <!-- HVAC Keywords Section -->
+      <section v-if="showHvacKeywords">
+        <label>HVAC Professional Resources</label>
+        <div id="hvac-keywords">
+          <NuxtLink v-for="keyword in keywordSets.hvac" :key="keyword" :to="`/${keyword.replace(/ /g, '-')}?kw=1`"
+            :title="`HVAC ${keyword}`">
+            {{ keyword }}
+          </NuxtLink>
         </div>
       </section>
     </div>
@@ -49,7 +75,7 @@
 <script setup>
 import { useStore } from "~/stores";
 import { computed, onMounted, ref } from "vue";
-import { DUCTED_KEYWORDS } from "~/utils/constants";
+import { DUCTED_KEYWORDS, SPLIT_KEYWORDS, HVAC_KEYWORDS } from "~/utils/constants";
 
 // Get state from store
 const store = useStore();
@@ -60,7 +86,13 @@ const cities = computed(() => store.cities);
 const products = computed(() => store.products);
 const accessories = computed(() => store.accessories);
 const businesses = computed(() => store.businesses);
-const ductedKeywords = ref(DUCTED_KEYWORDS);
+
+// Organize keywords by category
+const keywordSets = ref({
+  ducted: DUCTED_KEYWORDS || [],
+  split: SPLIT_KEYWORDS || [],
+  hvac: HVAC_KEYWORDS || []
+});
 
 // Category visibility flags
 const showCities = ref(true);
@@ -68,17 +100,27 @@ const showProducts = ref(true);
 const showAccessories = ref(true);
 const showBusinesses = ref(true);
 const showDuctedKeywords = ref(false);
+const showSplitKeywords = ref(false);
+const showHvacKeywords = ref(false);
 
 // Function to check if domain matches any category items
 const checkDomainForCategoryMatches = () => {
   const domain = window.location.hostname.toLowerCase();
 
   // Extract keywords from domain (remove common TLDs and split by non-alphanumeric characters)
-  const domainBase = domain.replace(/\.(com|org|net|co|io|app)$/, '');
+  const domainBase = domain.replace(/\.(com|org|net|co|io|app|ai)$/, '');
   const keywords = domainBase.split(/[^a-z0-9]/).filter(k => k.length > 3);
 
-  // Check if domain contains "duct" or "ducted"
+  // Check which keyword section to show based on domain
   showDuctedKeywords.value = domain.includes('duct');
+  showSplitKeywords.value = domain.includes('split');
+  showHvacKeywords.value = domain.includes('hvac');
+
+  // Fallback: If this is an AC domain but doesn't match any specific category,
+  // show the HVAC keywords as a default
+  if (domain.includes('ac') && !showDuctedKeywords.value && !showSplitKeywords.value && !showHvacKeywords.value) {
+    showHvacKeywords.value = true;
+  }
 
   // Check if any keywords match with products
   const productMatches = products.value.some(product => {
@@ -189,7 +231,9 @@ footer img {
   gap: 8px 1.5em;
 }
 
-#ducted-keywords {
+#ducted-keywords,
+#split-keywords,
+#hvac-keywords {
   gap: 8px 1.5em;
 }
 

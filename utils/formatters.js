@@ -7,8 +7,8 @@ import {
 	ADJACENT_LOCATION_WORDS,
 	CITIES,
 	DOMAIN_TITLE_MAPPINGS,
-	createDomainTitleMap,
 	VIDEO_DOMAIN_WHITELIST,
+	createDomainTitleMap,
 } from "~/utils/constants";
 
 // Create the domain title map once
@@ -169,7 +169,7 @@ function formatDomainToBaseTitle(domain) {
 
 	// Remove TLD and convert to lowercase for processing
 	const domainBase = domain
-		.replace(/\.(com|org|net|io|app)$/, "")
+		.replace(/\.(com|org|net|io|app|ai)$/, "") // Added .ai to the TLD list
 		.toLowerCase();
 
 	// Step 1: Dictionary-based word recognition
@@ -400,6 +400,25 @@ function buildFullTitle(
 
 	// Default behavior for city-only pages or home page
 
+	// Special handling for keywords to make them more prominent in title
+	if (kw) {
+		// Get the domain-specific keyword category from the base title
+		const keywordCategories = ["ducted", "duct", "split", "hvac"];
+		const matchedCategory = keywordCategories.find((category) =>
+			baseTitle.toLowerCase().includes(category)
+		);
+
+		if (matchedCategory) {
+			// For special domain with keywords, prioritize the keyword in the title
+			// Format as "Category Keyword" (e.g., "Ducted Installation")
+			const categoryName =
+				matchedCategory.charAt(0).toUpperCase() + matchedCategory.slice(1);
+			return `${categoryName} ${formatParam(kw)}`;
+		} else {
+			fullTitle += ` ${formatParam(kw)}`;
+		}
+	}
+
 	// Handle city with special cases
 	if (city) {
 		if (locationInfo.nearInTitle) {
@@ -413,7 +432,7 @@ function buildFullTitle(
 	if (bzn) fullTitle += ` for ${formatParam(bzn)}`;
 	if (acc) fullTitle += ` for ${formatParam(acc)}`;
 	if (mod) fullTitle += ` ${formatParam(mod)}`;
-	if (kw) fullTitle += ` ${formatParam(kw)}`;
+	// Removed kw handling from here since we now handle it above
 
 	// Add "You" if title ends with a location word and no parameters are specified
 	if (

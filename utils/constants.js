@@ -462,6 +462,52 @@ export const DUCTED_KEYWORDS = [
 	"split system heat pump",
 ];
 
+export const SPLIT_KEYWORDS = [
+	"Installation",
+	"Repair",
+	"Maintenance",
+	"Systems",
+	"Air Conditioning",
+	"Heat Pump",
+	"Indoor Units",
+	"Outdoor Units",
+	"Efficiency",
+	"Cooling Solution",
+	"Heating Solution",
+	"Zoning",
+	"Energy Savings",
+	"Multi Zone",
+	"Single Zone",
+	"Mini Split",
+	"Wall Mount",
+	"Ceiling Cassette",
+	"Floor Mount",
+	"Concealed Duct",
+];
+
+export const HVAC_KEYWORDS = [
+	"Installation",
+	"Repair",
+	"Maintenance",
+	"Service",
+	"Technician",
+	"Certification",
+	"Commercial",
+	"Residential",
+	"Air Quality",
+	"Ventilation",
+	"Heating",
+	"Cooling",
+	"Refrigeration",
+	"Ductwork",
+	"Energy Efficiency",
+	"Seasonal Maintenance",
+	"Filter Replacement",
+	"Thermostat",
+	"System Upgrade",
+	"Temperature Control",
+];
+
 export const createDomainTitleMap = () => {
 	const map = new Map();
 
