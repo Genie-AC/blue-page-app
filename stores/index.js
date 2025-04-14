@@ -83,7 +83,7 @@ export const useStore = defineStore("main", {
 				this.isCity = isCity;
 				this.isBzn = isBzn;
 				this.isAcc = isAcc;
-				this.isProd = isMod;
+				this.isMod = isMod; // BUG HERE! Should be this.isMod = isMod
 				this.isKw = isKw;
 
 				console.log("Setting page title with parameters:", {
@@ -99,7 +99,7 @@ export const useStore = defineStore("main", {
 				// Format the title using our formatter - pass page as the appropriate parameter
 				const formattedTitle = formatTitle(
 					domain,
-					"", // Don't pass page here to avoid duplicating it
+					!isCity && !isBzn && !isAcc && !isMod && !isKw ? page : "", // Only use page param if no other flags are true
 					isCity ? page : "", // Only pass page as city if isCity flag is true
 					isBzn ? page : "", // Only pass page as business if isBzn flag is true
 					isAcc ? page : "", // Only pass page as accessory if isAcc flag is true

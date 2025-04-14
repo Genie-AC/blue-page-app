@@ -316,7 +316,7 @@ export const BUSINESSES = [
 ];
 
 export const DUCTED_KEYWORDS = [
-	"a/c",
+	"ac",
 	"ac cooling system",
 	"air conditioning systems",
 	"split systems",

@@ -487,12 +487,33 @@ function toTitleCase(str) {
 }
 
 /**
- * Formats a meta description using the title and address
+ * Formats a meta description using the title, address, and keywords
  *
  * @param {string} title - The page title
  * @param {string} address - The business address
+ * @param {string|string[]} keywords - Optional keywords to include in the meta description
  * @returns {string} - The formatted meta description
  */
-export function formatMetaDescription(title, address) {
-	return `${title} ${address}. Genie Air Conditioning and Heating, Inc. is one of the largest wholesale distributors of AC mini split units in the United States. Looking for quality Air Conditioner units nearby? Contact us for a wide variety of heat pump, mini splits, room air conditioners, window air conditioners, PTAC, wall air conditioners, indoor and outdoor a/c units, and heating and cooling accessories for your AC needs. Wholesale Distributors is accomplished by our great buying power!`;
+export function formatMetaDescription(title, address, keywords = "") {
+	// Format keywords if they exist
+	let keywordText = "";
+
+	if (keywords) {
+		// Handle array or string of keywords
+		const keywordList = Array.isArray(keywords) ? keywords : [keywords];
+
+		if (keywordList.length > 0) {
+			// Format each keyword using the same title formatting logic
+			const formattedKeywords = keywordList
+				.filter((kw) => kw && kw.trim())
+				.map((kw) => formatTitle(DEFAULT_DOMAIN, "", "", "", "", "", kw.trim()))
+				.join(", ");
+
+			if (formattedKeywords) {
+				keywordText = ` Specialized in: ${formattedKeywords}.`;
+			}
+		}
+	}
+
+	return `${title} ${address}.${keywordText} Genie Air Conditioning and Heating, Inc. is one of the largest wholesale distributors of AC mini split units in the United States. Looking for quality Air Conditioner units nearby? Contact us for a wide variety of heat pump, mini splits, room air conditioners, window air conditioners, PTAC, wall air conditioners, indoor and outdoor a/c units, and heating and cooling accessories for your AC needs. Wholesale Distributors is accomplished by our great buying power!`;
 }
