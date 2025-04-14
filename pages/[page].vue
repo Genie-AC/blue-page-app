@@ -106,6 +106,23 @@ const fetchPageData = (page) => {
 onMounted(() => {
   try {
     const page = route.params.page;
+
+    // Get query parameters to determine page type
+    const isCity = !!route.query.city;
+    const isProduct = !!route.query.mod;
+    const isAccessory = !!route.query.acc;
+    const isBusiness = !!route.query.bzn;
+    const isKeyword = !!route.query.kw;
+
+    // Set page title based on route parameters
+    const domain = import.meta.client
+      ? window.location.hostname
+      : store.domainName || DEFAULT_DOMAIN;
+
+    // Call store method to set page title with proper flags
+    store.setPageTitleFromRoute(domain, page, isCity, isBusiness, isAccessory, isProduct, isKeyword);
+
+    // Continue with regular page data fetching
     fetchPageData(page);
   } catch (error) {
     console.error('Error during page initialization:', error);

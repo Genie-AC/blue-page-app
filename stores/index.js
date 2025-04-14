@@ -28,10 +28,10 @@ export const useStore = defineStore("main", {
 		metaDescription: "",
 		errorMessage: "", // Track store-level errors
 		isCity: false,
-		isProd: false,
-		isAcc: false,
-		isBzn: false,
-		isKw: false, // For popular keywords
+		isAccessory: false,
+		isBusiness: false,
+		isProduct: false, // For module pages
+		isKeyword: false, // For popular keywords
 	}),
 
 	getters: {
@@ -73,38 +73,40 @@ export const useStore = defineStore("main", {
 			domain,
 			page = "",
 			isCity = false,
-			isBzn = false,
-			isAcc = false,
-			isMod = false,
-			isKw = false
+			isBusiness = false,
+			isAccessory = false,
+			isProduct = false,
+			isKeyword = false
 		) {
 			try {
 				// Set flags in state
 				this.isCity = isCity;
-				this.isBzn = isBzn;
-				this.isAcc = isAcc;
-				this.isMod = isMod; // BUG HERE! Should be this.isMod = isMod
-				this.isKw = isKw;
+				this.isBusiness = isBusiness;
+				this.isAccessory = isAccessory;
+				this.isProduct = isProduct; // BUG HERE! Should be this.isProduct = isProduct
+				this.isKeyword = isKeyword;
 
 				console.log("Setting page title with parameters:", {
 					domain,
 					page,
 					isCity,
-					isBzn,
-					isAcc,
-					isMod,
-					isKw,
+					isBusiness,
+					isAccessory,
+					isProduct,
+					isKeyword,
 				});
 
 				// Format the title using our formatter - pass page as the appropriate parameter
 				const formattedTitle = formatTitle(
 					domain,
-					!isCity && !isBzn && !isAcc && !isMod && !isKw ? page : "", // Only use page param if no other flags are true
+					!isCity && !isBusiness && !isAccessory && !isProduct && !isKeyword
+						? page
+						: "", // Only use page param if no other flags are true
 					isCity ? page : "", // Only pass page as city if isCity flag is true
-					isBzn ? page : "", // Only pass page as business if isBzn flag is true
-					isAcc ? page : "", // Only pass page as accessory if isAcc flag is true
-					isMod ? page : "", // Only pass page as module if isMod flag is true
-					isKw ? page : "" // Only pass page as popular keyword if isKw flag is true
+					isBusiness ? page : "", // Only pass page as business if isBusiness flag is true
+					isAccessory ? page : "", // Only pass page as accessory if isAccessory flag is true
+					isProduct ? page : "", // Only pass page as module if isProduct flag is true
+					isKeyword ? page : "" // Only pass page as popular keyword if isKeyword flag is true
 				);
 
 				// Set the title in the store
